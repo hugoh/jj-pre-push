@@ -1,0 +1,28 @@
+amends "package://github.com/jdx/hk/releases/download/v1.43.0/hk@1.43.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.43.0/hk@1.43.0#/Builtins.pkl"
+
+local linters = new Mapping<String, Step> {
+    ["conflicts"] = Builtins.check_merge_conflict
+    ["symlinks"] = Builtins.check_symlinks
+    ["markdown"] = Builtins.rumdl
+    ["mise"] = Builtins.mise
+    ["ruff"] = Builtins.ruff
+}
+
+hooks {
+    ["pre-commit"] {
+        fix = true
+        stash = "git"
+        steps = linters
+    }
+    ["pre-push"] {
+        steps = linters
+    }
+    ["check"] {
+        steps = linters
+    }
+    ["fix"] {
+        fix = true
+        steps = linters
+    }
+}
